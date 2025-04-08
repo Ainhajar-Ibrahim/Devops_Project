@@ -15,7 +15,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag python-app:$(date +%s)
+      run: |
+          IMAGE_TAG=$(date +%s)  # Store timestamp in a variable
+          docker build . --file Dockerfile --tag python-app:$IMAGE_TAG  # Use the variable
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+      
+    - name: Start the Flask app in the background
+        run: |
+          docker run -d -p 5000:5000 python-app:$IMAGE_TAG  # Runs the app in detached mode
 
     - name: Call /version endpoint
       run: |
