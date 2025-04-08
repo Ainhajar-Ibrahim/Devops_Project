@@ -26,7 +26,11 @@ jobs:
 
     - name: Call /version endpoint
       run: |
+          sleep 60
           response=$(curl -s http://localhost:5000/version)
           echo "Response from /version: $response"
-          
+          if [[ "$response" != "Current app version: 1.0.0" ]]; then
+            echo "Version check failed!"
+            exit 1
+          fi
     
